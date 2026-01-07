@@ -26,7 +26,7 @@ namespace PhemoteDesktop
             Label ipLabel = new()
             {
                 Name = "ipLabel",
-                Text = PhemoteServer?.LocalIPAddress?.ToString() ?? "IP unavailable",
+                Text = "IP unavailable",
                 Font = new Font("Segoe UI", 16, FontStyle.Bold),
                 AutoSize = true,
                 Location = new Point(50, 100),

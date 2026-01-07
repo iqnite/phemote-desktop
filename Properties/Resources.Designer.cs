@@ -71,15 +71,6 @@ namespace PhemoteDesktop.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die 192.168.20.75 ähnelt.
-        /// </summary>
-        internal static string IP {
-            get {
-                return ResourceManager.GetString("IP", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die 5050 ähnelt.
         /// </summary>
         internal static string Port {

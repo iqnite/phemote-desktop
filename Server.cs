@@ -35,7 +35,7 @@ namespace PhemoteDesktop
             }
         }
 
-        private void HandleRequest(HttpListenerContext context)
+        private static void HandleRequest(HttpListenerContext context)
         {
             HttpListenerRequest request = context.Request;
             HttpListenerResponse response = context.Response;

@@ -40,27 +40,73 @@ namespace PhemoteDesktop
             HttpListenerRequest request = context.Request;
             HttpListenerResponse response = context.Response;
 
-            if (request.HttpMethod == "POST")
+            try
             {
-                using (StreamReader reader = new(request.InputStream, request.ContentEncoding))
+                if (request.HttpMethod == "POST")
                 {
-                    string body = reader.ReadToEnd();
-                    Command command = JsonSerializer.Deserialize<Command>(body)!;
-                    Console.WriteLine($"Received command: {command.action}");
-                    CommandHandler.HandleCommand(command.action);
+                    using (StreamReader reader = new(request.InputStream, request.ContentEncoding))
+                    {
+                        string body = reader.ReadToEnd();
+
+                        if (string.IsNullOrWhiteSpace(body))
+                        {
+                            response.StatusCode = 400;
+                            byte[] errorBuffer = Encoding.UTF8.GetBytes("{\"error\":\"Empty request body\"}");
+                            response.ContentLength64 = errorBuffer.Length;
+                            response.OutputStream.Write(errorBuffer, 0, errorBuffer.Length);
+                            response.Close();
+                            return;
+                        }
+
+                        Command? command = JsonSerializer.Deserialize<Command>(body);
+
+                        if (command == null || string.IsNullOrWhiteSpace(command.Value.action))
+                        {
+                            response.StatusCode = 400;
+                            byte[] errorBuffer = Encoding.UTF8.GetBytes("{\"error\":\"Invalid command format\"}");
+                            response.ContentLength64 = errorBuffer.Length;
+                            response.OutputStream.Write(errorBuffer, 0, errorBuffer.Length);
+                            response.Close();
+                            return;
+                        }
+
+                        Console.WriteLine($"Received command: {command.Value.action}");
+                        CommandHandler.HandleCommand(command.Value.action);
+                    }
+
+                    response.StatusCode = 200;
+                    byte[] buffer = Encoding.UTF8.GetBytes("{\"status\":\"success\"}");
+                    response.ContentLength64 = buffer.Length;
+                    response.OutputStream.Write(buffer, 0, buffer.Length);
                 }
-
-                response.StatusCode = 200;
-                byte[] buffer = Encoding.UTF8.GetBytes("{\"status\":\"success\"}");
-                response.ContentLength64 = buffer.Length;
-                response.OutputStream.Write(buffer, 0, buffer.Length);
+                else
+                {
+                    response.StatusCode = 405; // Method Not Allowed
+                    byte[] errorBuffer = Encoding.UTF8.GetBytes("{\"error\":\"Only POST requests are allowed\"}");
+                    response.ContentLength64 = errorBuffer.Length;
+                    response.OutputStream.Write(errorBuffer, 0, errorBuffer.Length);
+                }
             }
-            else
+            catch (JsonException ex)
             {
-                response.StatusCode = 405; // Method Not Allowed
+                Console.WriteLine($"JSON deserialization error: {ex.Message}");
+                response.StatusCode = 400;
+                byte[] errorBuffer = Encoding.UTF8.GetBytes("{\"error\":\"Invalid JSON format\"}");
+                response.ContentLength64 = errorBuffer.Length;
+                response.OutputStream.Write(errorBuffer, 0, errorBuffer.Length);
             }
-
-            response.Close();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error handling request: {ex.Message}");
+                response.StatusCode = 500;
+                byte[] errorBuffer = Encoding.UTF8.GetBytes("{\"error\":\"Internal server error\"}");
+                response.ContentLength64 = errorBuffer.Length;
+                response.OutputStream.Write(errorBuffer, 0, errorBuffer.Length);
+            }
+            finally
+            {
+                response.Close();
+            }
         }
 
         struct Command

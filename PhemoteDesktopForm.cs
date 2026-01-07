@@ -1,3 +1,5 @@
+using PhemoteDesktop.Properties;
+
 namespace PhemoteDesktop
 {
     public class PhemoteDesktopForm : Form
@@ -17,7 +19,7 @@ namespace PhemoteDesktop
             // 
             // PhemoteDesktopForm
             // 
-            ClientSize = new Size(282, 253);
+            ClientSize = new Size(500, 253);
             Icon = resources.GetObject("$this.Icon") as Icon;
             Name = "PhemoteDesktopForm";
             Text = "Phemote Control";
@@ -26,7 +28,7 @@ namespace PhemoteDesktop
             Label ipLabel = new()
             {
                 Name = "ipLabel",
-                Text = "IP unavailable",
+                Text = $"#{Server.GetLocalIPAddress().Replace(".", "*")}#{Resources.Port}#",
                 Font = new Font("Segoe UI", 16, FontStyle.Bold),
                 AutoSize = true,
                 Location = new Point(50, 100),

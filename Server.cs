@@ -109,6 +109,26 @@ namespace PhemoteDesktop
             }
         }
 
+        public static string GetLocalIPAddress()
+        {
+            try
+            {
+                var host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (var ip in host.AddressList)
+                {
+                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    {
+                        return ip.ToString();
+                    }
+                }
+                return "No IPv4 address found";
+            }
+            catch
+            {
+                return "IP unavailable";
+            }
+        }
+
         struct Command
         {
             public string action { get; set; }

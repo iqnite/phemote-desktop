@@ -40,8 +40,19 @@ namespace PhemoteDesktop
             HttpListenerRequest request = context.Request;
             HttpListenerResponse response = context.Response;
 
+            response.AddHeader("Access-Control-Allow-Origin", "*");
+            response.AddHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+            response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+
             try
             {
+                if (request.HttpMethod == "OPTIONS")
+                {
+                    response.StatusCode = 204;
+                    response.Close();
+                    return;
+                }
+
                 if (request.HttpMethod == "POST")
                 {
                     using (StreamReader reader = new(request.InputStream, request.ContentEncoding))

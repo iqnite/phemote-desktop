@@ -2,9 +2,11 @@ namespace PhemoteDesktop
 {
     public class PhemoteDesktopForm : Form
     {
-        public PhemoteDesktopForm()
+        public Server PhemoteServer;
+        public PhemoteDesktopForm(Server server)
         {
             Text = "Phemote Control";
+            PhemoteServer = server;
             InitializeComponent();
         }
 
@@ -19,14 +21,22 @@ namespace PhemoteDesktop
             Icon = resources.GetObject("$this.Icon") as Icon;
             Name = "PhemoteDesktopForm";
             Text = "Phemote Control";
-            ResumeLayout(false);
+            StartPosition = FormStartPosition.CenterScreen;
+
             Label ipLabel = new()
             {
-                Text = "",
+                Name = "ipLabel",
+                Text = PhemoteServer?.LocalIPAddress?.ToString() ?? "IP unavailable",
                 Font = new Font("Segoe UI", 16, FontStyle.Bold),
                 AutoSize = true,
-                Location = new Point(50, 100)
+                Location = new Point(50, 100),
+                TabIndex = 0
             };
+
+            Controls.Add(ipLabel);
+
+            ResumeLayout(false);
+            PerformLayout();
         }
     }
 }

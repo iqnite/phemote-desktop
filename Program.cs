@@ -17,10 +17,12 @@ namespace PhemoteDesktop
 
     public class PhemoteDesktopApplicationContext : ApplicationContext
     {
+        public Server PhemoteServer;
         private NotifyIcon notifyIcon;
 
         public PhemoteDesktopApplicationContext()
         {
+            PhemoteServer = new Server();
             notifyIcon = new NotifyIcon()
             {
                 Icon = Properties.Resources.AppIcon,
@@ -49,12 +51,12 @@ namespace PhemoteDesktop
             switch (eventArgs?.Button)
             {
                 case MouseButtons.Left:
-                    Form desktopForm = new PhemoteDesktopForm();
+                    Form desktopForm = new PhemoteDesktopForm(PhemoteServer);
                     desktopForm.Show();
                     break;
                 default:
                     break;
             }
         }
-    }
+}
 }

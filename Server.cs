@@ -42,7 +42,7 @@ namespace PhemoteDesktop
 
             if (request.HttpMethod == "POST")
             {
-                using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                using (StreamReader reader = new(request.InputStream, request.ContentEncoding))
                 {
                     string body = reader.ReadToEnd();
                     Command command = JsonSerializer.Deserialize<Command>(body)!;

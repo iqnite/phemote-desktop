@@ -33,6 +33,10 @@ namespace PhemoteDesktop
                 case "9":
                     SendKeys.SendWait("{DOWN}{RIGHT}");
                     break;
+                case "code:9":
+                    // *9# to kill the current window
+                    SendKeys.SendWait("{ALT}{F4}");
+                    break;
                 default:
                     break;
             }
